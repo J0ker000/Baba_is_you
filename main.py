@@ -8,7 +8,7 @@ class Object:
 def load_texture():
     floore = pygame.image.load('Textures/Floore.png')
     objects = {
-        'Baba': Object(pygame.image.load('Textures/Baba.png'), ([7, 7], [1, 0]))
+        'Baba': Object(pygame.image.load('Textures/Baba.png'), [[7, 7], [1, 2]])
     }
     return floore, objects
 def render(screen, floore, objects):
@@ -35,7 +35,6 @@ def management(key):
         return (1, 0)
     return (0, 0)
 def move(object_coords, shift):
-    print(shift)
     for coords in object_coords:
         coords[0] += shift[0]
         coords[1] += shift[1]
