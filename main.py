@@ -1,25 +1,28 @@
 import pygame
 import sys
 
-
+class Object:
+    def __init__(self, image, coords):
+        self.image = image
+        self.coords = coords
 def load_texture():
+    floore = pygame.image.load('Textures/Floore.png')
     objects = {
-        'Floore': (pygame.image.load('Textures/Floore.png'), []),
-        'Baba': (pygame.image.load('Textures/Baba.png'), [7, 7])
+        'Baba': Object(pygame.image.load('Textures/Baba.png'), ([7, 7], [1, 0]))
     }
-    return objects
-def render(screen, objects):
+    return floore, objects
+def render(screen, floore, objects):
     #Отрисовка пола грового поля
     for x in range(15):
         for y in range(15):
-            screen.blit(objects['Floore'][0], (x*objects['Floore'][0].get_height(),
-                                                y*objects['Floore'][0].get_width()))
+            screen.blit(floore, (x*floore.get_height(),
+                                 y*floore.get_width()))
 
     #Отрисовка всех оставшихся объктов
-    for image in objects:
-        if not image == 'Floore':
-            screen.blit(objects[image][0], (objects[image][1][0]*objects[image][0].get_height(),
-                                             objects[image][1][1]*objects[image][0].get_width()))
+    for object in objects:
+        for coords in objects[object].coords:
+            screen.blit(objects[object].image, [objects[object].image.get_height()*i for i in coords])
+
     pygame.display.flip()
 def management(key):
     if (key == pygame.K_w) or (key == pygame.K_UP):
@@ -33,12 +36,18 @@ def management(key):
     return (0, 0)
 def move(object_coords, shift):
     print(shift)
-    object_coords[0] += shift[0]
-    object_coords[1] += shift[1]
+    for coords in object_coords:
+        coords[0] += shift[0]
+        coords[1] += shift[1]
+        #Коллизия объектов с границами карты
+        if max(coords) > 14:
+            coords[coords.index(max(coords))] = 14
+        if min(coords) < 0:
+            coords[coords.index(min(coords))] = 0
 def main():
-    objects = load_texture()
-    width = objects['Floore'][0].get_width()*15     # Ширина окна
-    height = objects['Floore'][0].get_height()*15    # Высота окна (Поле: 15X15; Размер сектора = 50)
+    floore, objects = load_texture()
+    width = floore.get_width()*15     # Ширина окна
+    height = floore.get_height()*15    # Высота окна (Поле: 15X15; Размер сектора = 50)
     pygame.init()
     FPS = 30
     clock =pygame.time.Clock()
@@ -52,9 +61,9 @@ def main():
                 gameover = True
             #Управление
             if event.type == pygame.KEYUP:
-                move(objects['Baba'][1], management(event.key))
+                move(objects['Baba'].coords, management(event.key))
 
-        render(screen, objects)
+        render(screen, floore, objects)
         clock.tick(FPS)
     sys.exit(0)
 
