@@ -1,6 +1,6 @@
 import pygame
 import sys
-from protocols import push_protocol, stop_protocol
+from protocols import push_protocol, stop_protocol, collision_with_players_protocol
 from render import render
 from object import Object
 def load_texture():
@@ -34,9 +34,9 @@ def move(shift, objects):
             if objects[index].stop:
                 if coords in objects[index].coords:
                     stop_protocol(coords, shift)
-
             if objects[index].push:
-                objects[index].coords = push_protocol(objects[index].coords, shift, coords)
+                push_protocol(objects[index].coords, shift, coords)
+    collision_with_players_protocol(object_coords, shift)
 
 def main():
     floore, objects = load_texture()
@@ -44,7 +44,7 @@ def main():
     height = floore.get_height()*15    # Высота окна (Поле: 15X15; Размер сектора = 50)
     pygame.init()
     FPS = 30
-    clock =pygame.time.Clock()
+    clock = pygame.time.Clock()
     screen = pygame.display.set_mode([width, height])
     gameover = False
     while not gameover:

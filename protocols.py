@@ -8,7 +8,11 @@ def push_protocol(object_coords, shift, coords):
             if object_coords.count(coords) >= 2:
                 coords[0] += shift[0]
                 coords[1] += shift[1]
-    return object_coords
 def stop_protocol(coords, shift):
         coords[0] -= shift[0]
         coords[1] -= shift[1]
+def collision_with_players_protocol(object_coords, shift):
+    for coords in object_coords:
+        if object_coords.count(coords) >= 2:
+            coords[0] -= shift[0]
+            coords[1] -= shift[1]
