@@ -22,20 +22,20 @@ def management(key):
     return [0, 0]
 def move(shift, objects):
     object_coords = objects['Baba'].coords
-    for coords in object_coords:
-        coords[0] += shift[0]
-        coords[1] += shift[1]
+    for player_coords in object_coords:
+        player_coords[0] += shift[0]
+        player_coords[1] += shift[1]
         #Коллизия объектов с границами карты
-        if (max(coords) > 14) or (min(coords) < 0):
-            stop_protocol(coords, shift)
-
-        #Взаимодействие с объектами
-        for index in objects:
+        if (max(player_coords) > 14) or (min(player_coords) < 0):
+            stop_protocol(player_coords, shift)
+    # Взаимодействие с объектами
+    for index in objects:
+        for player_coords in object_coords:
             if objects[index].stop:
-                if coords in objects[index].coords:
-                    stop_protocol(coords, shift)
+                if player_coords in objects[index].coords:
+                    stop_protocol(player_coords, shift)
             if objects[index].push:
-                push_protocol(objects[index].coords, shift, coords)
+                push_protocol(objects[index].coords, shift, player_coords, object_coords)
     collision_with_players_protocol(object_coords, shift)
 
 def main():
